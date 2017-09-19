@@ -1,0 +1,9 @@
+body {
+  font-family: sans-serif;
+  font-size: 12pt;
+}
+
+contactos-chat {
+  max-width: 320px;
+  margin: 0 auto;
+}

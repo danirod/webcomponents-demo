@@ -1,0 +1,83 @@
+<template id="indicador-contacto">
+  <div class="contacto">
+    <slot></slot>
+    <i class="estado"></i>
+  </div>
+
+  <style>
+    .contacto {
+      font-family: sans-serif;
+      font-size: 11pt;
+      line-height: 20px;
+      background: #ADD8E6;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      padding-left: 5px;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    .contacto:hover {
+      background: #c1e1ec;
+    }
+
+    i.estado {
+      float: left;
+      width: 12px;
+      font-size: 0;
+      position: relative;
+    }
+
+    i.estado:before {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      border-radius: 100%;
+      content: '';
+    }
+
+    .contacto.online i.estado:before {
+      background-color: green;
+    }
+
+    .contacto.offline i.estado:before {
+      background-color: gray;
+    }
+  </style>
+</template>
+
+<script>
+  window.customElements.define('indicador-contacto', class extends HTMLElement {
+    constructor() {
+      super();
+      let owner = document.currentScript.ownerDocument;
+      this._shadow = this.attachShadow({ mode: 'open' });
+      this._template = owner.getElementById('indicador-contacto');
+      this._online = this.getAttribute("estado") == "conectado";
+    }
+
+    connectedCallback() {
+      let node = this._buildComponent();
+      this._shadow.appendChild(node);
+    }
+
+    _buildComponent() {
+      let node = this._template.content.cloneNode(true);
+      let container = node.querySelector(".contacto");
+      let estado = node.querySelector(".estado");
+
+      if (this._online) {
+        estado.innerText = "Conectado";
+        estado.setAttribute("aria-label", "Conectado");
+        container.classList.add("online");
+      } else {
+        estado.innerText = "Desconectado";
+        estado.setAttribute("aria-label", "Desconectado");
+        container.classList.add("offline");
+      }
+      return node;
+    }
+  });
+</script>
